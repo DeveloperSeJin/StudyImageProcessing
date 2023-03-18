@@ -23,4 +23,9 @@ print(doc.shape)
 # A의 가중치 + B의 가중치 = 1
 # cv2.addWeighted(dog_cat, 0.7, doc, 0.3, 0) => dog_Cat이미지에 0.7만큼의 가중치, doc 이미지에 0.3만큼의 가중치 부여
 result = cv2.addWeighted(dc, 0.7, doc, 0.3, 0)
+#제목을 써야 함
+#cv2.imshow('result', result)
 cv2.imshow(result)
+#아래와 같은 코드를 써야 멈춤
+#cv2.waitKey(0)
+#cv2.destroyAllWindows()
