@@ -34,7 +34,6 @@ cv2.imshow('result', result)
 plt.figure(figsize=(15, 5)) 
 plt.subplot(1, 1, 1)
 plt.hist(img.ravel(), 256, [0, 256])
-plt.show()
 
 plt.figure(figsize=(15, 5))
 plt.subplot(1, 1, 1)
