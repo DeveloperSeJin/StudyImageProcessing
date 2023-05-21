@@ -1,8 +1,9 @@
 import tkinter as tk
 from tkinter import filedialog
 from PIL import Image, ImageTk
-
-
+import cv2
+import Functions as func 
+   
 def open_image():
     # 이미지 삽입을 위해 내 파일 탐색기를 열고 파일 경로를 가져옴
     file_path = filedialog.askopenfilename(filetypes=[("Image files", "*.png;*.jpg;*.jpeg")])
@@ -15,14 +16,22 @@ def open_image():
         explain.config(font=("Arial", 15, "bold"), fg="blue")
         
         image = Image.open(file_path)
-        image = image.resize((300, 350))  # 이미지 크기 조정
+        # image = func.resizeImage(image) # 이미지 크기 비율 맞춰서 조정 ... 아직 미완성
+        # print(image.shape)
+        image = image.resize((300, 300))  # 이미지 크기 조정
         photo = ImageTk.PhotoImage(image)
         
-        # 입력한 이미지로 화면이 바뀜
+        # 마우스 좌표 찍기 rgb 값 가져오기
+        window.bind("<Button>", func.callback_mouse)
+        
+        
+        # 이미지를 라벨에 삽입
+        label.pack()
         label.config(image=photo, relief=tk.SOLID, borderwidth=2, background="pink")
         label.image = photo
         
         
+
 
 
 
