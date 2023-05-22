@@ -24,8 +24,5 @@ def resizeImage(pics):
         
 
     
-def callback_mouse(event):
-    print(event.x, event.y)
-    
     
     
