@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-def detect_color_in_roi(image_path):
+def detect_color_in_roi(image=None):
     def mouse_callback(event, x, y, flags, param):
         nonlocal selected_roi, roi_corners, cnt
 
@@ -11,13 +11,19 @@ def detect_color_in_roi(image_path):
             cnt += 1
 
     # 이미지 로드
-    img = cv2.imread(image_path)
-
+    img = 0
+    if isinstance(image, str): # 이미지 경로가 주어진 경우   
+        img = cv2.imread(image)
+    elif image is None: # 이미지가 없는 경우
+        print('Could not open or find the image:')
+        return
+    else: img = image
+    
     # 변수 초기화
     selected_roi = False
     roi_corners = []
     cnt = -1
-    detecting_result = []
+    detecting_result = [] # index, (x, y), RGB 저장됨
 
     # 윈도우 생성 및 마우스 이벤트 설정
     cv2.namedWindow('Select ROI')
