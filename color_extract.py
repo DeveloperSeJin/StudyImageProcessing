@@ -68,6 +68,34 @@ def detect_color_in_roi(image=None):
     cv2.destroyAllWindows()
     return detecting_result
 
+def detect_color_without_mouse(x, y):
+    global image    
+    
+    open_cv_image = np.array(image) 
+    # Convert RGB to BGR 
+    open_cv_image = open_cv_image[:, :, ::-1].copy() 
+    
+    # BGR에서 HSV로 변환
+    hsv_img = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+    
+    # 마스크 생성 및 추출된 색상 영역 표시
+    mask = np.zeros(hsv_img.shape[:2], dtype=np.uint8)
+    roi_corners = np.array([x, y], dtype=np.int32)
+    cv2.fillPoly(mask, roi_corners, 255)
+    color_extracted = cv2.bitwise_and(hsv_img, hsv_img, mask=mask)
+    
+    # HSV to RGB
+    color_extracted = cv2.cvtColor(color_extracted, cv2.COLOR_HSV2RGB)
+
+    # 추출된 색상 영역에서 평균 색상 계산
+    average_color = cv2.mean(color_extracted, mask=mask)
+    
+    # 평균 색상 출력
+    print(f"Average RGB values at {list(roi_corners[0][0])}: {average_color}")
+    
+    # detecting_result.append((cnt, list(roi_corners[0][0]), average_color))
+    return average_color
+
 # 함수 호출 예시
 image_path = 'images/test.jpg'
 result = detect_color_in_roi(image_path)
