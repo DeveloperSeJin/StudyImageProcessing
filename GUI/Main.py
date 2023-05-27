@@ -1,13 +1,13 @@
 import tkinter as tk
 from tkinter import filedialog
 from PIL import Image, ImageTk, ImageGrab
-
+import cv2
 
 def open_image():
     
     # 이미지 삽입을 위해 내 파일 탐색기를 열고 파일 경로를 가져옴
     file_path = filedialog.askopenfilename(filetypes=[("Image files", "*.png;*.jpg;*.jpeg")])
-    
+    print(file_path)
     ############ 파일 탐색기 열기
     if file_path:
         # 색 조합 추천 상단에 위치
@@ -56,25 +56,32 @@ def open_image():
         ############ 설명 라벨 생성
         explain = tk.Label(window, text="궁금한 색상의 위치를 클릭하세요.")
         explain.pack(anchor="center", side="top")
-        explain.config(font=("Arial", 15, "bold"), fg="blue")
+        explain.config(font=("Arial", 15, "bold"), fg="black")
         
         global image # 전역변수로 지정
         
-        image = Image.open(file_path)
+        # 이미지에서 파일을 업로드하여 opencv로 이미지를 열기
+        image = cv2.imread(file_path)  
+        cv2.imshow("Processed Image", image)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+        # 이미지의 색상을 RGB로 변환
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        # 이미지를 PIL로 변환
+        pil_image = Image.fromarray(image)
         # image = func.resizeImage(image) # 이미지 크기 비율 맞춰서 조정 ... 아직 미완성
         # print(image.shape)
-        image = image.resize((300, 300))  # 이미지 크기 조정
-        photo = ImageTk.PhotoImage(image)
+        pil_image = pil_image.resize((300, 300))  # 이미지 크기 조정
+        photo = ImageTk.PhotoImage(pil_image)
         
-        # 마우스 좌표 찍기 rgb 값 가져오기
-        window.bind("<Button>", callback_mouse)
         
         # 이미지를 라벨에 삽입
-        labelImage = tk.Label(window, image=photo)
-        labelImage.config(image=photo, relief=tk.SOLID, borderwidth=1, background="pink")
-        labelImage.pack()
+        buttonImage = tk.Button(window, image=photo)
+        buttonImage.config(image=photo, relief=tk.SOLID, borderwidth=1, background="pink")
+        buttonImage.bind("<Button-1>", callback_mouse)
+        buttonImage.pack()
         
-        labelImage.image = photo
+        buttonImage.image = photo
         
         
         
@@ -109,7 +116,7 @@ def open_image():
         
         ########### 버튼 다시 생성하기
         button2 = tk.Button(window, text="Insert Image", command=open_image)
-        button2.config(width=20, height=2, bg="white", fg="blue")
+        button2.config(width=20, height=2, bg="white", fg="black")
         button2.pack(anchor="center", side="top", pady=20)
         
         
@@ -138,7 +145,7 @@ window.configure(background="white") # 창의 배경색 지정
 # 라벨을 생성하여 window에 배치
 title = tk.Label(window, text='의류 색상 조합 추천 프로그램' )
 title.pack(anchor="center")
-title.config(font=("Arial", 20, "bold"), fg="blue")
+title.config(font=("Arial", 20, "bold"), fg="black")
 
 
 # window에 insert Image라는 텍슽가 들어간 버튼 생성 
@@ -146,7 +153,7 @@ title.config(font=("Arial", 20, "bold"), fg="blue")
 button = tk.Button(window, text="Insert Image", command=open_image)
 
 # button을 window에 배치
-button.config(width=20, height=2, bg="white", fg="blue")
+button.config(width=20, height=2, bg="white", fg="black")
 button.pack(anchor="center", side="top", pady=20)
 
 window.mainloop()
