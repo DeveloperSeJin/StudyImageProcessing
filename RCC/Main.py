@@ -2,6 +2,8 @@ import tkinter as tk
 from tkinter import filedialog
 from PIL import Image, ImageTk, ImageGrab
 import cv2
+import numpy as np
+from color_extract import detect_color_without_mouse
 
 def open_image():
     
@@ -62,13 +64,10 @@ def open_image():
         
         # 이미지에서 파일을 업로드하여 opencv로 이미지를 열기
         image = cv2.imread(file_path)  
-        cv2.imshow("Processed Image", image)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
         # 이미지의 색상을 RGB로 변환
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        RGB_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         # 이미지를 PIL로 변환
-        pil_image = Image.fromarray(image)
+        pil_image = Image.fromarray(RGB_image)
         # image = func.resizeImage(image) # 이미지 크기 비율 맞춰서 조정 ... 아직 미완성
         # print(image.shape)
         pil_image = pil_image.resize((300, 300))  # 이미지 크기 조정
@@ -126,14 +125,9 @@ def open_image():
 
 ############ 마우스 좌표 찍기 rgb 값 가져오기
 def callback_mouse(event):
+    print('-' * 50)
+    print(detect_color_without_mouse(event.x, event.y, image))
     
-    print(event.x, event.y) # 마우스 좌표 찍기
-    
-    
-    
-    
-
-
 ############ 창 생성
 window = tk.Tk()
 window.title("의류 색상 조합 추천 프로그램") # 창 제목 지정
@@ -157,3 +151,4 @@ button.config(width=20, height=2, bg="white", fg="black")
 button.pack(anchor="center", side="top", pady=20)
 
 window.mainloop()
+
