@@ -75,7 +75,7 @@ def detect_color_without_mouse(x, y, image):
     
     # 마스크 생성 및 추출된 색상 영역 표시
     mask = np.zeros(hsv_img.shape[:2], dtype=np.uint8)
-    roi_corners = np.array([x, y], dtype=np.int32)
+    roi_corners = np.array([[x, y]], dtype=np.int32)
     cv2.fillPoly(mask, roi_corners, 255)
     color_extracted = cv2.bitwise_and(hsv_img, hsv_img, mask=mask)
     
@@ -92,6 +92,7 @@ def detect_color_without_mouse(x, y, image):
     return average_color
 
 # 함수 호출 예시
-image_path = 'images/test.jpg'
-result = detect_color_without_mouse(1, 2, cv2.imread(image_path, 1))
-print(result)
+if __name__ == '__main__':
+    image_path = 'images/test.jpg'
+    result = detect_color_without_mouse(50, 50, cv2.imread(image_path, 1))
+    print(result)
