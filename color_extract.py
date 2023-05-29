@@ -68,17 +68,10 @@ def detect_color_in_roi(image=None):
     cv2.destroyAllWindows()
     return detecting_result
 
-def detect_color_without_mouse(x, y):
-    global image    
-    global pil_image
-    
-    # open_cv_image = np.array(image)
-    numpy_image = np.array(pil_image)
-    # Convert PIL RGB to opencv BGR 
-    opencv_image=cv2.cvtColor(numpy_image, cv2.COLOR_RGB2BGR)
+def detect_color_without_mouse(x, y, image):
     
     # BGR에서 HSV로 변환
-    hsv_img = cv2.cvtColor(opencv_image, cv2.COLOR_BGR2HSV)
+    hsv_img = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
     
     # 마스크 생성 및 추출된 색상 영역 표시
     mask = np.zeros(hsv_img.shape[:2], dtype=np.uint8)
@@ -100,5 +93,5 @@ def detect_color_without_mouse(x, y):
 
 # 함수 호출 예시
 image_path = 'images/test.jpg'
-result = detect_color_in_roi(image_path)
+result = detect_color_without_mouse(1, 2, cv2.imread(image_path, 1))
 print(result)
