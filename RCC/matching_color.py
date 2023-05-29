@@ -1,6 +1,4 @@
 import pandas as pd
-import numpy as np
-import cv2
 
 def get_color_list(color_name) :
     # 엑셀 파일 읽어오기
@@ -13,13 +11,15 @@ def get_color_list(color_name) :
     # matching color 값을 추출
     matching_color_values = filtered_matching_color.str.split(', ').explode().unique()
 
-    bgr_values = []
-    # matching color에 해당하는 Name을 찾고 해당하는 BGR 값을 가져옴
-    for matching_color_value in matching_color_values:
-        filtered_color = color_data.loc[color_data['Name'] == matching_color_value, 'BGR']
-        if not filtered_color.empty:
-            bgr_value = filtered_color.values[0]
-            bgr_values.append(bgr_value)
+    # bgr_values = []
+    # # matching color에 해당하는 Name을 찾고 해당하는 BGR 값을 가져옴
+    # for matching_color_value in matching_color_values:
+    #     filtered_color = color_data.loc[color_data['Name'] == matching_color_value, 'BGR']
+    #     if not filtered_color.empty:
+    #         bgr_value = filtered_color.values[0]
+    #         bgr_values.append(bgr_value)
+
+    bgr_values = [color_data.loc[color_data['Name'] == matching_color_value, 'BGR'].values[0] for matching_color_value in matching_color_values]
     
     color_list = []
     for bgr_value in bgr_values:
