@@ -4,6 +4,8 @@ from PIL import Image, ImageTk, ImageGrab
 import cv2
 import numpy as np
 from color_extract import detect_color_without_mouse
+from Select_color import get_similar_color
+from matching_color import get_color_list
 
 def open_image():
     
@@ -13,6 +15,8 @@ def open_image():
     ############ 파일 탐색기 열기
     if file_path:
         # 색 조합 추천 상단에 위치
+        global canvas
+
         canvas = tk.Canvas(window, width=750, height=55, background="white") # 그림을 넣을 부분 넣기
         canvas.pack(side="top", pady=20)
         # insert 버튼 삭제하기
@@ -82,11 +86,18 @@ def open_image():
         
         buttonImage.image = photo
         
-        
-        
+        global clickcanvas
         ########## 선택한 부분의 rgb 값 가져오기
         clickcanvas = tk.Canvas(window, width=200, height=55, background="white") # 그림을 넣을 부분 넣기
         clickcanvas.pack(side="top")
+
+         # 사각형의 길이와 높이, 패딩 정의
+        rect_width = 40
+        rect_height = 40
+        rect_padding = 150
+        # 텍스트의 폰트 정의
+        text_color = ("Arial", 15, "bold")
+        text_rgb = ("Arial", 10)
         
         x1 = 10
         y1 = 10
@@ -108,25 +119,99 @@ def open_image():
         textColor_y = y2/2 + 14
 
         # 글자 삽입
-        clickcanvas.create_text(textColor_x, textColor_y, text=f"Rect {i+1}", font=text_rgb)
-
-
+        clickcanvas.create_text(textColor_x, textColor_y, text=f"Rect {4}", font=text_rgb)
 
         
-        ########### 버튼 다시 생성하기
-        button2 = tk.Button(window, text="Insert Image", command=open_image)
-        button2.config(width=20, height=2, bg="white", fg="black")
-        button2.pack(anchor="center", side="top", pady=20)
+       
         
         
-        
+def rgb_to_hex(rgb):
+    r, g, b = rgb
+    hex_value = f"#{r:02x}{g:02x}{b:02x}"
+    return hex_value
 
 
 
 ############ 마우스 좌표 찍기 rgb 값 가져오기
 def callback_mouse(event):
     print('-' * 50)
-    print(detect_color_without_mouse(event.x, event.y, image))
+    rgb = detect_color_without_mouse(event.x, event.y, image)
+    rgb = (int(rgb[0]), int(rgb[1]), int(rgb[2]))
+    rgb, color_name = get_similar_color(rgb)
+    hex_value = rgb_to_hex(rgb)
+
+    match_rgb, match_color = get_color_list(color_name)
+
+    global clickcanvas
+
+    clickcanvas.destroy()
+
+    clickcanvas = tk.Canvas(window, width=200, height=55, background="white") # 그림을 넣을 부분 넣기
+    clickcanvas.pack(side="top")
+    
+    # 사각형의 길이와 높이, 패딩 정의
+    rect_width = 40
+    rect_height = 40
+    rect_padding = 150
+    # 텍스트의 폰트 정의
+    text_color = ("Arial", 15, "bold")
+    text_rgb = ("Arial", 10)
+
+    global canvas
+    canvas.destroy()
+    canvas = tk.Canvas(window, width=750, height=55, background="white") # 그림을 넣을 부분 넣기
+    canvas.pack(side="top", pady=20)
+        
+    
+    # 추천하는 색상이 4개여야 하기 때문에 색상과 
+    for i in range(len(match_rgb)):
+        x1 = i * (rect_width + rect_padding) + 10
+        y1 = 10
+        x2 = x1 + rect_width
+        y2 = y1 + rect_height
+        
+        # 사각형 그리기
+        canvas.create_rectangle(x1, y1, x2, y2, fill=rgb_to_hex(match_rgb[i]), outline='black')
+        
+        # 색상 이름 텍스트의 좌표 계산 = 사각형 옆에 글자 넣기
+        textName_x = x2 + 40
+        textName_y = y2/2 - 5
+
+        # 글자 삽입
+        canvas.create_text(textName_x, textName_y, text='match_color' + str(i), font=text_color)
+        
+        # 색상 16진수 값 보여주기?
+        textColor_x = x2 + 30
+        textColor_y = y2/2 + 14
+        
+        # 글자 삽입
+        canvas.create_text(textColor_x, textColor_y, text=match_color[i], font=text_rgb)
+
+    
+    x1 = 10
+    y1 = 10
+    x2 = x1 + rect_width
+    y2 = y1 + rect_height
+
+    # 사각형 그리기
+    clickcanvas.create_rectangle(x1, y1, x2, y2, fill=hex_value, outline='black')
+
+    # 색상 이름 텍스트의 좌표 계산 = 사각형 옆에 글자 넣기
+    textName_x = x2 + 40
+    textName_y = y2/2 - 5
+
+    # 글자 삽입
+    clickcanvas.create_text(textName_x, textName_y, text=f"Selected Color", font=text_color)
+
+    # 색상 16진수 값 보여주기?
+    textColor_x = x2 + 30
+    textColor_y = y2/2 + 14
+
+    # 글자 삽입
+    clickcanvas.create_text(textColor_x, textColor_y, text=color_name, font=text_rgb)
+
+
+    
     
 ############ 창 생성
 window = tk.Tk()
@@ -151,4 +236,3 @@ button.config(width=20, height=2, bg="white", fg="black")
 button.pack(anchor="center", side="top", pady=20)
 
 window.mainloop()
-
