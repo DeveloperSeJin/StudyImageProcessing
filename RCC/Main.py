@@ -14,56 +14,13 @@ def open_image():
     print(file_path)
     ############ 파일 탐색기 열기
     if file_path:
-        # 색 조합 추천 상단에 위치
-        global canvas
-
-        canvas = tk.Canvas(window, width=750, height=55, background="white") # 그림을 넣을 부분 넣기
-        canvas.pack(side="top", pady=20)
-        # insert 버튼 삭제하기
-        button.destroy()
-        
-        # 사각형의 길이와 높이, 패딩 정의
-        rect_width = 40
-        rect_height = 40
-        rect_padding = 150
-         
-        # 텍스트의 폰트 정의
-        text_color = ("Arial", 15, "bold")
-        text_rgb = ("Arial", 10)
-        
-        # 추천하는 색상이 4개여야 하기 때문에 색상과 
-        for i in range(4):
-            print('for insert')
-            x1 = i * (rect_width + rect_padding) + 10
-            y1 = 10
-            x2 = x1 + rect_width
-            y2 = y1 + rect_height
-            
-            # 사각형 그리기
-            canvas.create_rectangle(x1, y1, x2, y2, fill='white', outline='black')
-            
-            # 색상 이름 텍스트의 좌표 계산 = 사각형 옆에 글자 넣기
-            textName_x = x2 + 40
-            textName_y = y2/2 - 5
-
-            # 글자 삽입
-            canvas.create_text(textName_x, textName_y, text=f"Rect {i+1}", font=text_color)
-            
-            # 색상 16진수 값 보여주기?
-            textColor_x = x2 + 30
-            textColor_y = y2/2 + 14
-            
-            # 글자 삽입
-            canvas.create_text(textColor_x, textColor_y, text=f"Rect {i+1}", font=text_rgb)
-        
-        
-        
         
         ############ 설명 라벨 생성
         explain = tk.Label(window, text="궁금한 색상의 위치를 클릭하세요.")
         explain.pack(anchor="center", side="top")
         explain.config(font=("Arial", 15, "bold"), fg="black")
         
+        ############ 이미지 삽입
         global image # 전역변수로 지정
         
         # 이미지에서 파일을 업로드하여 opencv로 이미지를 열기
@@ -87,18 +44,24 @@ def open_image():
         
         buttonImage.image = photo
         
-        global clickcanvas
+        
+        
         ########## 선택한 부분의 rgb 값 가져오기
-        clickcanvas = tk.Canvas(window, width=200, height=55, background="white") # 그림을 넣을 부분 넣기
+        
+        global clickcanvas
+        
+        clickcanvas = tk.Canvas(window, width=200, height=58, background="white") # 그림을 넣을 부분 넣기
         clickcanvas.pack(side="top")
 
-         # 사각형의 길이와 높이, 패딩 정의
+
+
+        # 사각형의 길이와 높이, 패딩 정의
         rect_width = 40
         rect_height = 40
         rect_padding = 150
         # 텍스트의 폰트 정의
-        text_color = ("Arial", 15, "bold")
-        text_rgb = ("Arial", 10)
+        text_color = ("Arial", 10, "bold")
+        text_rgb = ("Arial", 8)
         
         x1 = 10
         y1 = 10
@@ -109,19 +72,63 @@ def open_image():
         clickcanvas.create_rectangle(x1, y1, x2, y2, fill='white', outline='black')
 
         # 색상 이름 텍스트의 좌표 계산 = 사각형 옆에 글자 넣기
-        textName_x = x2 + 40
+        textName_x = x2 + 55
         textName_y = y2/2 - 5
 
         # 글자 삽입
-        clickcanvas.create_text(textName_x, textName_y, text=f"fdfdfdf", font=text_color)
+        clickcanvas.create_text(textName_x, textName_y, text=f"Selected Color", font=text_color)
 
         # 색상 16진수 값 보여주기?
-        textColor_x = x2 + 30
+        textColor_x = x2 + 55
         textColor_y = y2/2 + 14
 
         # 글자 삽입
         clickcanvas.create_text(textColor_x, textColor_y, text=f"Rect {4}", font=text_rgb)
+        
+        
+        
+        ######### 처음에 보여지는 색 조합 레이아웃
+        # 색 조합 추천 상단에 위치
+        global canvas
 
+        canvas = tk.Canvas(window, width=750, height=58, background="white") # 그림을 넣을 부분 넣기
+        canvas.pack(side="top", pady=20)
+        # insert 버튼 삭제하기
+        button.destroy()
+        
+        # 사각형의 길이와 높이, 패딩 정의
+        rect_width = 40
+        rect_height = 40
+        rect_padding = 150
+         
+        # 텍스트의 폰트 정의
+        text_color = ("Arial", 10, "bold")
+        text_rgb = ("Arial", 8)
+        
+        # 추천하는 색상이 4개여야 하기 때문에 색상과 
+        for i in range(4):
+            print('for insert')
+            x1 = i * (rect_width + rect_padding) + 10
+            y1 = 10
+            x2 = x1 + rect_width
+            y2 = y1 + rect_height
+            
+            # 사각형 그리기
+            canvas.create_rectangle(x1, y1, x2, y2, fill='white', outline='black')
+            
+            # 색상 이름 텍스트의 좌표 계산 = 사각형 옆에 글자 넣기
+            textName_x = x2 + 40
+            textName_y = y2/2 - 5
+
+            # 글자 삽입
+            canvas.create_text(textName_x, textName_y, text=f"Rect {i+1}", font=text_color)
+            
+            # 색상 16진수 값 보여주기?
+            textColor_x = x2 + 40
+            textColor_y = y2/2 + 14
+            
+            # 글자 삽입
+            canvas.create_text(textColor_x, textColor_y, text=f"Rect {i+1}", font=text_rgb)
         
        
         
@@ -147,7 +154,7 @@ def callback_mouse(event):
 
     clickcanvas.destroy()
 
-    clickcanvas = tk.Canvas(window, width=200, height=55, background="white") # 그림을 넣을 부분 넣기
+    clickcanvas = tk.Canvas(window, width=200, height=58, background="white") # 그림을 넣을 부분 넣기
     clickcanvas.pack(side="top")
     
     # 사각형의 길이와 높이, 패딩 정의
@@ -155,16 +162,16 @@ def callback_mouse(event):
     rect_height = 40
     rect_padding = 150
     # 텍스트의 폰트 정의
-    text_color = ("Arial", 15, "bold")
-    text_rgb = ("Arial", 10)
+    text_color = ("Arial", 10, "bold")
+    text_rgb = ("Arial", 8)
 
     global canvas
     canvas.destroy()
-    canvas = tk.Canvas(window, width=750, height=55, background="white") # 그림을 넣을 부분 넣기
+    canvas = tk.Canvas(window, width=750, height=58, background="white") # 그림을 넣을 부분 넣기
     canvas.pack(side="top", pady=20)
         
     
-    # 추천하는 색상이 4개여야 하기 때문에 색상과 
+    # 추천하는 색상이 4개 여야 하기 때문에 색상과 
     for i in range(len(match_rgb)):
         x1 = i * (rect_width + rect_padding) + 10
         y1 = 10
@@ -175,14 +182,14 @@ def callback_mouse(event):
         canvas.create_rectangle(x1, y1, x2, y2, fill=rgb_to_hex(match_rgb[i]), outline='black')
         
         # 색상 이름 텍스트의 좌표 계산 = 사각형 옆에 글자 넣기
-        textName_x = x2 + 40
+        textName_x = x2 + 55
         textName_y = y2/2 - 5
 
         # 글자 삽입
-        canvas.create_text(textName_x, textName_y, text='match_color' + str(i), font=text_color)
+        canvas.create_text(textName_x, textName_y, text='match_color' + str(i+1), font=text_color)
         
-        # 색상 16진수 값 보여주기?
-        textColor_x = x2 + 30
+        # 색의 이름
+        textColor_x = x2 + 55
         textColor_y = y2/2 + 14
         
         # 글자 삽입
@@ -198,14 +205,14 @@ def callback_mouse(event):
     clickcanvas.create_rectangle(x1, y1, x2, y2, fill=hex_value, outline='black')
 
     # 색상 이름 텍스트의 좌표 계산 = 사각형 옆에 글자 넣기
-    textName_x = x2 + 40
+    textName_x = x2 + 55
     textName_y = y2/2 - 5
 
     # 글자 삽입
     clickcanvas.create_text(textName_x, textName_y, text=f"Selected Color", font=text_color)
 
-    # 색상 16진수 값 보여주기?
-    textColor_x = x2 + 30
+    # 색 이름
+    textColor_x = x2 + 55
     textColor_y = y2/2 + 14
 
     # 글자 삽입
@@ -218,7 +225,7 @@ def callback_mouse(event):
 window = tk.Tk()
 window.title("의류 색상 조합 추천 프로그램") # 창 제목 지정
 # 창의 크기 지정
-window.geometry("800x600")
+window.geometry("800x550")
 window.configure(background="white") # 창의 배경색 지정
 
 
