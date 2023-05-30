@@ -72,11 +72,17 @@ def detect_color_without_mouse(x, y, image):
     
     # BGR에서 HSV로 변환
     hsv_img = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+    print(image[y][x])
+    print(hsv_img[y, x])
+    
+    h, s, v = map(int, hsv_img[y, x])
     
     # 마스크 생성 및 추출된 색상 영역 표시
-    mask = np.zeros(hsv_img.shape[:2], dtype=np.uint8)
-    roi_corners = np.array([[(x, y)]], dtype=np.int32)
-    cv2.fillPoly(mask, roi_corners, 255)
+    lower = (h-20, s-50, v-50)
+    upper = (h+20, s+50, v+50)
+    # lower = (h-10, 30, 30)
+    # upper = (h+10, 230, 230)
+    mask = cv2.inRange(hsv_img, lower, upper)
     color_extracted = cv2.bitwise_and(hsv_img, hsv_img, mask=mask)
     
     # HSV to RGB
@@ -86,13 +92,15 @@ def detect_color_without_mouse(x, y, image):
     average_color = cv2.mean(color_extracted, mask=mask)
     
     # 평균 색상 출력
-    print(f"Average RGB values at {list(roi_corners[0][0])}: {average_color}")
+    # print(f"Average RGB values at {list(x, y)}: {average_color}")
     
-    # detecting_result.append((cnt, list(roi_corners[0][0]), average_color))
     return average_color
 
 # 함수 호출 예시
 if __name__ == '__main__':
-    image_path = './imgs/wuze.jpg'
-    result = detect_color_without_mouse(50, 50, cv2.imread(image_path, 1))
+    # image_path = './imgs/wuze.jpg'
+    image_path = 'images/lenna.png'
+    # image_path = 'images/test2.jpg'
+    result = detect_color_without_mouse(480, 257, cv2.imread(image_path, 1))
+    # result = detect_color_in_roi(image_path)
     print(result)
