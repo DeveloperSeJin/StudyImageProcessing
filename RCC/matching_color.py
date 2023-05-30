@@ -19,7 +19,7 @@ def get_color_list(color_name) :
     #         bgr_value = filtered_color.values[0]
     #         bgr_values.append(bgr_value)
 
-    bgr_values = [color_data.loc[color_data['Name'] == matching_color_value, 'BGR'].values[0] for matching_color_value in matching_color_values]
+    bgr_values = [color_data.loc[color_data['Name'] == matching_color_value, 'BGR'].values[0] for matching_color_value in matching_color_values if not color_data.loc[color_data['Name'] == matching_color_value, 'BGR'].empty]
     
     color_list = []
     for bgr_value in bgr_values:

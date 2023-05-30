@@ -68,13 +68,14 @@ def open_image():
         
         # 이미지에서 파일을 업로드하여 opencv로 이미지를 열기
         image = cv2.imread(file_path)  
+        image = cv2.resize(image, dsize = (300, 300), interpolation=cv2.INTER_LINEAR)
         # 이미지의 색상을 RGB로 변환
         RGB_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         # 이미지를 PIL로 변환
         pil_image = Image.fromarray(RGB_image)
         # image = func.resizeImage(image) # 이미지 크기 비율 맞춰서 조정 ... 아직 미완성
         # print(image.shape)
-        pil_image = pil_image.resize((300, 300))  # 이미지 크기 조정
+        #pil_image = pil_image.resize((300, 300))  # 이미지 크기 조정
         photo = ImageTk.PhotoImage(pil_image)
         
         
