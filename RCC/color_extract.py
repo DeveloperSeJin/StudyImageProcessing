@@ -99,7 +99,7 @@ def detect_color_without_mouse(x, y, image):
 # 함수 호출 예시
 if __name__ == '__main__':
     # image_path = './imgs/wuze.jpg'
-    image_path = 'images/lenna.png'
+    image_path = 'imgs/wuze.jpg'
     # image_path = 'images/test2.jpg'
     result = detect_color_without_mouse(480, 257, cv2.imread(image_path, 1))
     # result = detect_color_in_roi(image_path)

@@ -6,6 +6,7 @@ import numpy as np
 from color_extract import detect_color_without_mouse
 from Select_color import get_similar_color
 from matching_color import get_color_list
+import keyboard
 
 def open_image():
     
@@ -130,7 +131,13 @@ def open_image():
             # 글자 삽입
             canvas.create_text(textColor_x, textColor_y, text=f"Rect {i+1}", font=text_rgb)
         
-       
+        keyboard.on_press_key("enter", on_enter_pressed)
+
+def on_enter_pressed(e) :
+    print('Enter')
+    cv2.destroyAllWindows()
+    cv2.imshow('color_change_mode', image)
+    cv2.waitKey(0)
         
         
 def rgb_to_hex(rgb):
@@ -179,8 +186,10 @@ def callback_mouse(event):
         y2 = y1 + rect_height
         
         # 사각형 그리기
-        canvas.create_rectangle(x1, y1, x2, y2, fill=rgb_to_hex(match_rgb[i]), outline='black')
-        
+        # canvas.create_rectangle(x1, y1, x2, y2, fill=rgb_to_hex(match_rgb[i]), outline='black')
+        rect_tag = canvas.create_rectangle(x1, y1, x2, y2, fill=rgb_to_hex(match_rgb[i]), outline='black')
+        canvas.tag_bind(rect_tag, "<Button-1>", lambda event: handle_rectangle_click(event, match_rgb[i]))
+
         # 색상 이름 텍스트의 좌표 계산 = 사각형 옆에 글자 넣기
         textName_x = x2 + 55
         textName_y = y2/2 - 5
@@ -194,7 +203,6 @@ def callback_mouse(event):
         
         # 글자 삽입
         canvas.create_text(textColor_x, textColor_y, text=match_color[i], font=text_rgb)
-
     
     x1 = 10
     y1 = 10
@@ -219,7 +227,9 @@ def callback_mouse(event):
     clickcanvas.create_text(textColor_x, textColor_y, text=color_name, font=text_rgb)
 
 
-    
+def handle_rectangle_click(pixel, param1):
+    print(param1)
+    print(pixel)
     
 ############ 창 생성
 window = tk.Tk()
