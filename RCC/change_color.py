@@ -2,49 +2,71 @@ import cv2
 import numpy as np
 
 def change(image, color):
+    def on_trackbar(pos) :
+        global threshold
+        threshold = cv2.getTrackbarPos('threshold', 'Select ROI')
 
     def mouse_callback(event, x, y, flags, param):
-        nonlocal selected_roi, roi_corners, cnt
+        global threshold
 
         if event == cv2.EVENT_LBUTTONDOWN:
-            selected_roi = True
-            roi_corners.append((x, y))
-            cnt += 1
+            mask_img = cv2.cvtColor(original_image, cv2.COLOR_BGR2YUV)
 
-    # cv2.destroyAllWindows()
-
-    cv2.namedWindow('color_change_mode')
-    cv2.setMouseCallback('color_change_mode', mouse_callback)
-
-    selected_roi = False
-    roi_corners = []
-    cnt = -1
-    detecting_result = [] # index, (x, y), RGB 저장됨
-
-    while True :
-        cv2.imshow('color_change_mode', image)
-        hsv_img = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-
-        if selected_roi:
-            mask = np.zeros(hsv_img.shape[:2], dtype=np.uint8)
-            roi_corners = np.array([roi_corners], dtype=np.int32)
-            cv2.fillPoly(mask, roi_corners, 255)
-            color_extracted = cv2.bitwise_and(hsv_img, hsv_img, mask=mask)
-
-            # HSV to RGB
-            color_extracted = cv2.cvtColor(color_extracted, cv2.COLOR_HSV2RGB)
+            y_coord, u, v = map(int, mask_img[y, x])
             
-            cv2.imshow('asfd', color_extracted)
+            # 마스크 생성 및 추출된 색상 영역 표시
+            lower = (y_coord-50, u-3, v-3)
+            upper = (y_coord+50, u+3, v+3)
+            # lower = (h-10, 30, 30)
+            # upper = (h+10, 230, 230)
+            mask = cv2.inRange(mask_img, lower, upper)
+            #color_extracted = cv2.bitwise_and(image, color, mask=mask)
 
-            # ROI 선택 초기화 
-            selected_roi = False
-            roi_corners = []
+            for i in range(len(mask)) :
+                for j in range(len(mask[i])) :
+                    if mask[i][j] == 255 and  x - threshold <= j <= x + threshold and y - threshold <= i <= y + threshold:
+                        # Extract image's value component (V) in HSV format
+                        v = cv2.cvtColor(np.uint8([[original_image[i][j]]]), cv2.COLOR_BGR2HSV)[0][0][2]
+
+                        rgb_img = np.zeros((1, 1, 3), dtype=np.uint8)
+                        rgb_img[0, 0, :] = color
+
+                        hsv_img = cv2.cvtColor(rgb_img, cv2.COLOR_RGB2HSV)
+                        hsv_value = tuple(map(int, hsv_img[0, 0, :]))
+
+                        target_v = v + (hsv_value[2] - v) // 2
+                        hsv_value = hsv_value[:2] + (target_v,)
+                        hsv_img = np.zeros((1, 1, 3), dtype=np.uint8)
+                        hsv_img[0, 0, :] = hsv_value
+
+                        rgb_img = cv2.cvtColor(hsv_img, cv2.COLOR_HSV2BGR)
+                        rgb_value = tuple(map(int, rgb_img[0, 0, :]))
+                        result_image[i][j] = rgb_value
+
+    original_image = image.copy()
+    result_image = image.copy()
+    # 윈도우 생성 및 마우스 이벤트 설정
+    cv2.namedWindow('Select ROI')
+    cv2.setMouseCallback('Select ROI', mouse_callback)
+    cv2.createTrackbar('threshold', 'Select ROI', 0, 100, on_trackbar)
+    cv2.setTrackbarPos('threshold', 'Select ROI', 50)
+
+    while True:
+        # BGR에서 HSV로 변환
+        cv2.imshow('Select ROI', result_image)
+        key = cv2.waitKey(1)
+
         # ESC 키를 누르면 종료
-        if cv2.waitKey(1) == 27:
+        if key == 27:
             break
+
+        if key == 13:
+            result_image = original_image.copy()
+
+    cv2.destroyAllWindows()
 
 if __name__ == '__main__' :
     image = cv2.imread('./imgs/wuze.jpg')
-    color = (200, 0, 0)
+    color = (255, 255, 255)
 
     change(image, color)

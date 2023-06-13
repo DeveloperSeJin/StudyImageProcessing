@@ -35,7 +35,7 @@ def detect_color_in_roi(image=None):
         # ROI 선택이 완료되면 색상 검출 수행
         if selected_roi:
             # BGR에서 HSV로 변환
-            hsv_img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+            hsv_img = cv2.cvtColor(img, cv2.COLOR_BGR2YUV)
 
             # 마스크 생성 및 추출된 색상 영역 표시
             mask = np.zeros(hsv_img.shape[:2], dtype=np.uint8)
@@ -72,8 +72,6 @@ def detect_color_without_mouse(x, y, image):
     
     # BGR에서 HSV로 변환
     hsv_img = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-    print(image[y][x])
-    print(hsv_img[y, x])
     
     h, s, v = map(int, hsv_img[y, x])
     
