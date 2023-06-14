@@ -12,11 +12,10 @@ def open_image():
     
     # 이미지 삽입을 위해 내 파일 탐색기를 열고 파일 경로를 가져옴
     file_path = filedialog.askopenfilename(filetypes=[("Image files", "*.png;*.jpg;*.jpeg")])
+
     print(file_path)
     ############ 파일 탐색기 열기
     if file_path:
-        global color
-        color = (0, 0, 0)
         ############ 설명 라벨 생성
         explain = tk.Label(window, text="궁금한 색상의 위치를 클릭하세요.")
         explain.pack(anchor="center", side="top")
@@ -176,6 +175,8 @@ def callback_mouse(event):
         
         # 사각형 그리기
         rect_tag = canvas.create_rectangle(x1, y1, x2, y2, fill=rgb_to_hex(match_rgb[i]), outline='black')
+        
+        #클릭시 색상변경모드로 변경
         canvas.tag_bind(rect_tag, "<Button-1>", lambda event, index = i: handle_rectangle_click(event, match_rgb[index], match_color[index]))
 
         # 색상 이름 텍스트의 좌표 계산 = 사각형 옆에 글자 넣기
@@ -215,14 +216,8 @@ def callback_mouse(event):
     clickcanvas.create_text(textColor_x, textColor_y, text=color_name, font=text_rgb)
 
 
+#색상변경 모드로 변경
 def handle_rectangle_click(pixel, rgb, color_name):
-    global color
-    color = rgb
-
-    print('rgb: ')
-    print(rgb)
-    print('color_name: ')
-    print(color_name)
     change(image, rgb)
     
 ############ 창 생성
